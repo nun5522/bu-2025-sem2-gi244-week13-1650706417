@@ -9,9 +9,28 @@ public class PersistentObject : MonoBehaviour
     private string instancePrivateDebugText = "instance private";
     public string instancePublicDebugText = "instance public";
 
+    private static PersistentObject staticInstance;
+
+    public static PersistentObject GetInstance()
+    {
+        return staticInstance;
+    }
+
+    public static PersistentObject Instance
+    { 
+        get { return staticInstance; } 
+    }
+
     void Awake()
     {
+        if (staticInstance != null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
         DontDestroyOnLoad(gameObject);
+        staticInstance = this;
     }
 
     void Start()
@@ -19,6 +38,9 @@ public class PersistentObject : MonoBehaviour
         staticPublicDebugText = "Hello (public)";
         staticPrivateDebugText = "Hello (private)";
         StartCoroutine(Loop());
+
+        Debug.Log(GameSetting.difficulty);
+        Debug.Log(GameSetting.GetapiKey());
     }
 
     void Update()
@@ -31,6 +53,14 @@ public class PersistentObject : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Escape))
         {
             Destroy(gameObject);
+        }
+        else if (Input.GetKeyDown(KeyCode.K))
+        {
+            staticPrivateDebugText += "K";
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            GameSetting.difficulty++;
         }
     }
 
